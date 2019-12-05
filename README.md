@@ -4,14 +4,18 @@ A project about OLAP noSQL database created in MongoDB
 Based on snowflake schema designed in mySQL workbench for restaurant database, populate data to the Fact collection 
 with sample data generated from mockaroo.com (500 rows and JSON as output type).
 
+Dimensions: order, date, employee, inventory, supplier
+
 Fact collection: Revenue
-Fact:  Revenue 
 
 { 
-"orderID": 
+
+"orderID":
+
 "product":[
 
 {
+
 "productID": 
 "productName": 
 "productCategory": 
@@ -21,6 +25,7 @@ Fact:  Revenue
 "supplierName": 
 }, 
 {
+  
   "productID": 
   "productName": 
   "productCategory": 
@@ -30,14 +35,18 @@ Fact:  Revenue
   "supplierName": 
 }, 
 … 
-] 
+],
+
 "employee": 
 { 
+
 "employeeID": 
 "employeeName": 
 },
+
 "date": 
 { 
+  
   "year": 
   "month": 
   "day": 
@@ -48,11 +57,12 @@ Fact:  Revenue
 "customer": [
 
 { 
+  
   "customerID": 
   "customerPhone": 
 }, 
-
 {
+  
   "customerID": 
   "customerPhone": 
 }, 
@@ -79,15 +89,15 @@ db.restaurants.aggregate([
 2. Which employees served the highest number of orders(top 2) in October?
 Insight: the restaurant also wants to keep track of the most effective employees in a specific month.
 
-db.restaurants.aggregate([ 
+db.restaurants.aggregate([
 
-{$match: {"date.month": 10}},
+      {$match: {"date.month": 10}},
 
-{$group: {_id: {employee: "$employee.employeeName"}, numberOfOrders: {$sum: 1}}}, 
+      {$group: {_id: {employee: "$employee.employeeName"}, numberOfOrders: {$sum: 1}}}, 
 
-{$sort:{numberOfOrders: -1}},
+      {$sort:{numberOfOrders: -1}},
 
-{$limit: 2}
+      {$limit: 2}
 
 ])
 
@@ -112,14 +122,14 @@ db.restaurants.aggregate([
 4. Quantity of each product category provided by all suppliers?
 Insight: to track the status of food stock and the suppliers
 
-db.restaurants.aggregate([ 
+db.restaurants.aggregate([
 
-{$unwind: "$product"},  
+    {$unwind: "$product"},  
 
-{$group: {_id: {supplierID: "$product.supplierName", item: "$product.productName"},
-quantity: {$sum: "$product.qty"}}},
+    {$group: {_id: {supplierID: "$product.supplierName", item: "$product.productName"},
+    quantity: {$sum: "$product.qty"}}},
 
-{$sort:{supplierID: 1}} 
+    {$sort:{supplierID: 1}} 
 
 ]) 
 
